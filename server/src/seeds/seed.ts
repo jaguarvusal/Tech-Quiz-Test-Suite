@@ -1,8 +1,14 @@
 import db from '../config/connection.js';
 import { Question } from '../models/index.js'
 import cleanDB from './cleanDb.js';
+import { readFileSync } from 'fs';
+import { dirname, join } from 'path';
+import { fileURLToPath } from 'url';
 
-import questionData from './pythonQuestions.json' assert{ type: 'json'};
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const questionData = JSON.parse(
+  readFileSync(join(__dirname, './pythonQuestions.json'), 'utf-8')
+);
 
 try {
   await db();
