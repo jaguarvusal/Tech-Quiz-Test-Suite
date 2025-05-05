@@ -8,9 +8,11 @@ const Quiz = () => {
   const [score, setScore] = useState(0);
   const [quizCompleted, setQuizCompleted] = useState(false);
   const [quizStarted, setQuizStarted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const getRandomQuestions = async () => {
     try {
+      setIsLoading(true);
       const questions = await getQuestions();
 
       if (!questions) {
@@ -20,6 +22,8 @@ const Quiz = () => {
       setQuestions(questions);
     } catch (err) {
       console.error(err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -54,6 +58,20 @@ const Quiz = () => {
     );
   }
 
+  if (isLoading) {
+    return (
+      <div className="d-flex justify-content-center align-items-center vh-100">
+        <div 
+          data-testid="loading-spinner"
+          className="spinner-border text-primary" 
+          role="status"
+        >
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
+  }
+
   if (quizCompleted) {
     return (
       <div className="card p-4 text-center">
@@ -69,13 +87,7 @@ const Quiz = () => {
   }
 
   if (questions.length === 0) {
-    return (
-      <div className="d-flex justify-content-center align-items-center vh-100">
-        <div className="spinner-border text-primary" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </div>
-      </div>
-    );
+    return null;
   }
 
   const currentQuestion = questions[currentQuestionIndex];
